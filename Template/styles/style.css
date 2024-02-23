@@ -214,6 +214,11 @@ body {
     grid-gap: 1.5rem;
 }
 
+.movie__search-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1.5rem;
+}
 
 /* Special scrollbar */
 
@@ -257,6 +262,9 @@ body {
     .popular__card-container {
         grid-template-columns: repeat(3, 1fr);
     }
+    .movie__search-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 @media screen and (max-width: 1000px) {
@@ -267,6 +275,9 @@ body {
         width: 95%;
     }
     .popular__card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .movie__search-container {
         grid-template-columns: repeat(2, 1fr);
     }
     .movie__container {
@@ -284,6 +295,10 @@ body {
         width: 90%;
     }
     .popular__card-container {
+        display: flex;
+        flex-direction: column;
+    }
+    .movie__search-container {
         display: flex;
         flex-direction: column;
     }
