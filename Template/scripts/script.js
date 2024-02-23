@@ -3,6 +3,7 @@
 import { setupCarousel } from "./carousel.js";
 import { fetchTrailerAPI } from "./APIhandler.js";
 import { myTopMovies } from "./APIhandler.js";
+import { searchMoviesAPI } from "./APIhandler.js";
 
 window.addEventListener('load', async () => {
     console.log('load');
@@ -20,8 +21,22 @@ window.addEventListener('load', async () => {
     } catch (error) {
         console.error('Något gick fel vid hämtning av trailer', error);
     }
+    searchMovies();
 });
+ 
+async function searchMovies() {
+    const apiKey = '567f8027';
+    // Lyssnare för 'input' händelse på sökfältet
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', async () => {
+        const searchResults = await searchMoviesAPI(apiKey, searchInput.value);
+        displaySearchResults(searchResults);
+        console.log(searchResults);
+    
 
+    moviesGrid.classList.add('d-none');
+    });
+}
 
 // Funktion för att slumpa fem filmer från listan
 function getRandomTrailers(trailers, count) {
@@ -90,7 +105,40 @@ async function showtopMovies() {
         moviesGrid.appendChild(movieBox);
 
     });
-
 }
 
+function displaySearchResults(results) {
+    const moviesContainer = document.getElementById('moviesContainer');
+    moviesContainer.innerHTML = ''; // Rensa tidigare resultat
+
+    if(results) {
+        results.forEach(movie => {
+            // Skapa filmkort och lägg till i behållaren
+            const displayMovieSearch = createMovieCard(movie);
+            moviesContainer.appendChild(displayMovieSearch);
+        });
+    } else {
+        moviesContainer.innerHTML = 'Kan inte hitta det du sökte efter.';
+    }
+}
+
+// Funktion för att skapa ett filmkort baserat på filmdata
+function createMovieCard(movie) {
+    const movieBox = document.createElement('article');
+    movieBox.classList.add('movie__container');
+
+    const posterImg = document.createElement('img');
+    posterImg.classList.add('poster__img');
+    posterImg.src = movie.Poster;
+    posterImg.alt = movie.Title;
+
+    const movieTitle = document.createElement('h3');
+    movieTitle.classList.add('movie__title');
+    movieTitle.textContent = movie.Title;
+
+    movieBox.appendChild(posterImg);
+    movieBox.appendChild(movieTitle);
+
+    return movieBox;
+}
 
