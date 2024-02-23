@@ -9,6 +9,7 @@ async function fetchTrailerAPI(){
             throw new Error('Kan inte hämta trailer..');
         }
         // movieTrailers.forEach(movie => {
+        //     console.log('Random trailer')
         //     console.log(movie);
         // });
 
@@ -31,9 +32,9 @@ async function myTopMovies() {
         }
 
         const topMoviesData = await response.json();
-        topMoviesData.forEach(movie => {
-            console.log(movie);
-        });
+        // topMoviesData.forEach(movie => {
+        //     console.log(movie);
+        // });
         return topMoviesData;
 
 
@@ -44,4 +45,9 @@ async function myTopMovies() {
 }
 
 export { myTopMovies };
+
+
+async function renderMovies() {
+    
+}
 
