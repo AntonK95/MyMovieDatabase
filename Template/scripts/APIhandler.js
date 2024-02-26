@@ -72,3 +72,27 @@ async function searchMoviesAPI(apiKey, searchQuery) {
 }
 
 export { searchMoviesAPI };
+
+
+async function fetchDetailedMovieInfo(imdbID) {
+    const apiKey = '567f8027';
+    const apiUrl = `https://www.omdbapi.com/?apikey=${apiKey}&plot=full&i=${imdbID}`;
+
+    console.log('API-anrop IMDB-ID', imdbID);
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        console.log('API URL', apiUrl);
+        console.log('API Response', data);
+        
+        // Returnera hela objektet
+        return data;
+    } catch (error) {
+        console.error('Något gick fel vid API-anrop', error);
+        throw error; 
+    }
+    
+
+}
+
+export { fetchDetailedMovieInfo };

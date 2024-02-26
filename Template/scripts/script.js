@@ -4,6 +4,7 @@ import { setupCarousel } from "./carousel.js";
 import { fetchTrailerAPI } from "./APIhandler.js";
 import { myTopMovies } from "./APIhandler.js";
 import { searchMoviesAPI } from "./APIhandler.js";
+import { fetchDetailedMovieInfo } from "./APIhandler.js"; 
 
 window.addEventListener('load', async () => {
     console.log('load');
@@ -69,8 +70,6 @@ async function showtopMovies() {
     const topMoviesData = await myTopMovies();
 
     const moviesGrid = document.getElementById('popularCardContainer');
-    
-   
 
     topMoviesData.forEach(movie => {
         // Skapa ny container/hållare för varje film
@@ -87,6 +86,11 @@ async function showtopMovies() {
         const movieTitle = document.createElement('h3');
         movieTitle.classList.add('movie__title');
         movieTitle.textContent = movie.title;
+
+        // Lägg till imdbID i dataset för varje kort
+        movieBox.dataset.imdbID = movie.imdbID;
+
+        movieBox.addEventListener('click', () => showMovieDetails(movie));
         
         // Lägg till poster och titel i movieBox:en
         movieBox.appendChild(posterImg);
@@ -97,6 +101,7 @@ async function showtopMovies() {
 
     });
 }
+
 
 async function searchMovies() {
     const apiKey = '567f8027';
@@ -111,14 +116,19 @@ async function searchMovies() {
         const searchResults = await searchMoviesAPI(apiKey, searchInput.value);
         displaySearchResults(searchResults);
         console.log(searchResults);
+
+        const searchResultItems = document.querySelectorAll('.movie__container');
+        searchResultItems.forEach(item => {
+            item.addEventListener('click', () => showMovieDetails(item.dataset.movie));
+        });
         
         if(searchInput.value.trim() === '') {
             // Så länge som searchInput är lika med en tom sträng så visa nedan
             carouselSection.style.display = 'block';
             popularMoviesSection.style.display = 'block';
             // Dölj nedan
-            moviesGrid.style.displa = 'none';
-            moviesContainer.style.displa = 'none';
+            moviesGrid.style.display = 'none';
+            moviesContainer.style.display = 'none';
         } else {
             carouselSection.style.display = 'none';
             popularMoviesSection.style.display = 'none';
@@ -152,6 +162,8 @@ function createMovieCard(movie) {
     const movieBox = document.createElement('article');
     movieBox.classList.add('movie__container');
 
+    movieBox.dataset.movie = JSON.stringify(movie);
+
     const posterImg = document.createElement('img');
     posterImg.classList.add('poster__img');
     posterImg.src = movie.Poster;
@@ -161,9 +173,77 @@ function createMovieCard(movie) {
     movieTitle.classList.add('movie__title');
     movieTitle.textContent = movie.Title;
 
+    // Lägg till imdbID i dataset för varje kort
+    movieBox.dataset.imdbID = movie.imdbID;
+
+    movieBox.addEventListener('click', () => showMovieDetails(movie));
+    
+
     movieBox.appendChild(posterImg);
     movieBox.appendChild(movieTitle);
 
     return movieBox;
 }
 
+async function showMovieDetails(movie) {
+    console.log('Visa information om film', movie);
+
+    try {
+        // Kontrollera att 'movie' och 'dataset.movie' är definerade
+        if(movie && movie.dataset && movie.dataset.imdbID) {
+        //const imdbID = movie.dataset.imdbID;
+        // Parsa JSON-strängen från dataset för att få filmobjektet
+        const movieDetails = movie.dataset.movie ? JSON.parse(movie.dataset.movie) : {};
+        console.log('Movie details', movieDetails);
+
+        // Gör ett nytt API-anrop för att hämta detaljerad information baserat på imdbID
+        const detailedMovieInfo = await fetchDetailedMovieInfo(movieDetails.imdbID);
+        console.log('Detailed movie info', detailedMovieInfo);
+        // Visa information i overlay
+        showOverlayWithDetails(detailedMovieInfo);
+        } else {
+            console.log('Ingen filmdata tillgänglig för detta kort');
+        }
+    } catch (error) {
+        console.error('Något gick fel vid hämtning av detaljerat information', error);
+    }
+}
+
+function showOverlayWithDetails(movieDetails) {
+    // Skapa overlay-element
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+
+    // Skapa innehållet för overlay
+    const overlayContent = document.createElement('section');
+    overlayContent.classList.add('overlay-content');
+
+    const posterImg = document.createElement('img');
+    posterImg.classList.add('poster__img');
+    posterImg.src = movieDetails.Poster;
+    posterImg.alt = movieDetails.Title;
+
+    const movieTitle = document.createElement('h2');
+    movieTitle.classList.add('movie__title movie__details-title');
+    movieTitle.textContent = movieDetails.Title;
+
+    const moviePlot = document.createElement('p');
+    moviePlot.classList.add('plot');
+    moviePlot.textContent = movieDetails.Plot;
+
+    overlayContent.appendChild(posterImg);
+    overlayContent.appendChild(movieTitle);
+
+    overlay.appendChild(overlayContent);
+
+    document.body.appendChild(overlay);
+    
+    console.log('API URL', apiUrl);
+    console.log('API Response', data);
+    // EventListener för att stänga overlay vid klick utanför.
+    overlay.addEventListener('click', (event) => {
+        if(event.target === overlay) {
+            document.body.removeChild(overlay);
+        }
+    });
+}
