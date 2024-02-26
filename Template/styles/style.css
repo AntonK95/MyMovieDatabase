@@ -287,7 +287,15 @@ body {
 }
 
 @media screen and (max-width: 600px) {
-    
+    .header {
+        padding: 0;
+    }
+
+    .header__flex {
+        flex-direction: column;
+        gap: .2rem;
+        margin: auto;
+    }
     .movie__container {
         min-width: -webkit-fill-available;
     }
