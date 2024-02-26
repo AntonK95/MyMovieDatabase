@@ -51,9 +51,3 @@ WAVE evaluation tool är användbart för att kontrollera tillgänglighet efters
 
 #### Template
 I mappen finner ni även en template som ni får använda er av om ni vill. I denna har jag kodat upp basen för applikationen, dess färgtema, funktionalitet för en karusell med trailers osv. Ni får jättegärna använda er av denna, men det är även tillåtet att skapa ert eget projekt från scratch. Kom dock ihåg att er applikation MÅSTE vara visuellt acceptabel.
-
-### Inlämning
-Inlämning av länken till ert publika Git-repo skall ske senast kl 23:59, söndagen den 3 mars på Azomo.
-
-### Examination
-Denna gång bedöms ni endast på er inlämning. Ingen presentation eller seminarium.
