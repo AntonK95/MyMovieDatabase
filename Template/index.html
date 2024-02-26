@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Movie Database</title>
     <link rel="stylesheet" href="./styles/style.css">
 </head>
+
 <body>
     <header class="header">
         <div class="content-wrapper header__flex">
@@ -13,14 +15,14 @@
             <form>
                 <input id="searchInput" type="text">
                 <button class="header__form-btn" id="searchBtn">Search</button>
-            </form>       
-            <button class="header__fav-btn" id="favBtn">Favorites</button> 
+            </form>
+            <button class="header__fav-btn" id="favBtn">Favorites</button>
         </div>
     </header>
 
     <section class="favorites-container d-none" id="favoritesContainer">
         <div class="content-wrapper favorites" id="favorites">
-            
+
         </div>
     </section>
 
@@ -33,15 +35,16 @@
         </div>
     </section>
 
-    <!-- Trailer Section -->
-    <section>
+    <!-- Trailer Section/Carousel Section -->
+    <section id="carouselSection">
         <div class="content-wrapper">
-            <article class="carousel" data-carousel>
-                <button class="carousel__btn prev" data-carousel-btn="prev">&#8612;</button>
-                <button class="carousel__btn next" data-carousel-btn="next">&#8614;</button>
-                <div data-slides>
-                      <div class="carousel__slide" data-active="true">
-                       <!--  <iframe src="https://www.youtube.com/embed/uYPbbksJxIg" width="420" height="315" frameborder="0"></iframe> 
+            <section class="carousel__section">
+                <article class="carousel" data-carousel>
+                    <button class="carousel__btn prev" data-carousel-btn="prev">&#8612;</button>
+                    <button class="carousel__btn next" data-carousel-btn="next">&#8614;</button>
+                    <div data-slides>
+                        <div class="carousel__slide" data-active="true">
+                            <!--  <iframe src="https://www.youtube.com/embed/uYPbbksJxIg" width="420" height="315" frameborder="0"></iframe> 
                     </div>
                     <div class="carousel__slide">
                          <iframe src="https://www.youtube.com/embed/y2rYRu8UW8M" width="420" height="315" frameborder="0"></iframe> 
@@ -55,17 +58,18 @@
                     <div class="carousel__slide">
                          <iframe src="https://www.youtube.com/embed/5xH0HfJHsaY" width="420" height="315" frameborder="0"></iframe> 
                     </div>  -->
-                </div>
-            </article>
+                        </div>
+                </article>
+            </section>
         </div>
     </section>
 
     <!-- Popular movies section -->
-    <section>
+    <section id="popularMoviesSection">
         <div class="content-wrapper popular">
             <h2 class="popular__title">My Movie Database Top 20</h2>
-             <section class="popular__card-container" id="popularCardContainer">
-               <!-- <article class="popular__movie">
+            <section class="popular__card-container" id="popularCardContainer">
+                <!-- <article class="popular__movie">
                     <img class="popular__movie-poster" src="./res/revengeOfTheSith.jpg" alt="Revenge of the Sith">
                     <h3 class="popular__movie-title">Revenge of the Sith</h3>
                 </article>
@@ -82,8 +86,8 @@
     </section>
 
     <section class="content-wrapper search-result">
-        <section class="movie__search-container" id="moviesContainer">
-            
+        <section class="movie__search-container" id="moviesContainer" style="display: none;">
+
         </section>
     </section>
 
@@ -91,4 +95,5 @@
     <script type="module" src="./scripts/APIhandler.js"></script>
     <script type="module" src="./scripts/script.js"></script>
 </body>
+
 </html>
