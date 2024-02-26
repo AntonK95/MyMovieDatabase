@@ -10,8 +10,14 @@ window.addEventListener('load', async () => {
     //Förslagsvis anropar ni era funktioner som skall sätta lyssnare, rendera objekt osv. härifrån
     // setupCarousel();
     // fetchTrailerAPI();
+    loadTrailer();
     myTopMovies();
     showtopMovies();
+    searchMovies();
+});
+
+
+async function loadTrailer() {
     try {
         const allTrailers = await fetchTrailerAPI();
 
@@ -21,21 +27,6 @@ window.addEventListener('load', async () => {
     } catch (error) {
         console.error('Något gick fel vid hämtning av trailer', error);
     }
-    searchMovies();
-});
- 
-async function searchMovies() {
-    const apiKey = '567f8027';
-    // Lyssnare för 'input' händelse på sökfältet
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', async () => {
-        const searchResults = await searchMoviesAPI(apiKey, searchInput.value);
-        displaySearchResults(searchResults);
-        console.log(searchResults);
-    
-
-    moviesGrid.classList.add('d-none');
-    });
 }
 
 // Funktion för att slumpa fem filmer från listan
@@ -104,6 +95,40 @@ async function showtopMovies() {
         // Lägg till movieBox i moviesGrid för att kunna visas på sidan
         moviesGrid.appendChild(movieBox);
 
+    });
+}
+
+async function searchMovies() {
+    const apiKey = '567f8027';
+    const carouselSection = document.getElementById('carouselSection');
+    const popularMoviesSection = document.getElementById('popularMoviesSection');
+    const moviesGrid = document.getElementById('popularCardContainer');
+    const moviesContainer = document.getElementById('moviesContainer');
+
+    // Lyssnare för 'input' händelse på sökfältet
+    const searchInput = document.getElementById('searchInput');
+    searchInput.addEventListener('input', async () => {
+        const searchResults = await searchMoviesAPI(apiKey, searchInput.value);
+        displaySearchResults(searchResults);
+        console.log(searchResults);
+        
+        if(searchInput.value.trim() === '') {
+            // Så länge som searchInput är lika med en tom sträng så visa nedan
+            carouselSection.style.display = 'block';
+            popularMoviesSection.style.display = 'block';
+            // Dölj nedan
+            moviesGrid.style.displa = 'none';
+            moviesContainer.style.displa = 'none';
+        } else {
+            carouselSection.style.display = 'none';
+            popularMoviesSection.style.display = 'none';
+            // Visa nedan
+            moviesGrid.style.display = '';
+            moviesContainer.style.display = '';
+
+            await searchMovies(apiKey, searchInput.value);
+        }
+    
     });
 }
 
