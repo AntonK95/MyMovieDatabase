@@ -277,6 +277,11 @@ body {
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
 }
 
+.detailed__poster-img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
 .detailed__movie-title {
     font-family: var(--font-family);
     color: var(--text-yellow);
@@ -288,6 +293,8 @@ body {
     text-align: center;
     color: var(--text-yellow);
     margin-bottom: .5rem;
+    margin-left: 6rem;
+    margin-right: 6rem;
 }
 
 .additional__info {
@@ -348,6 +355,31 @@ span {
     .movie__container {
         min-width: -webkit-fill-available;
     }
+    .plot{
+        margin-bottom: .5rem;
+        margin-left: 6rem;
+        margin-right: 6rem;
+    }
+}
+
+@media screen and (max-width: 850px) { 
+    .plot {
+        margin-left: 4rem;
+        margin-right: 4rem;
+    }
+}
+
+@media screen and (max-width: 700px) { 
+    .plot {
+        margin-left: 3rem;
+        margin-right: 3rem;
+    }
+}
+@media screen and (max-width: 650px) { 
+    .plot {
+        margin-left: 2rem;
+        margin-right: 2rem;
+    }
 }
 
 @media screen and (max-width: 600px) {
@@ -377,5 +409,9 @@ span {
     }
     ::-webkit-scrollbar {
         display: none;
+    }
+    .plot {
+        margin-left: 1rem;
+        margin-right: 1rem;
     }
 }
