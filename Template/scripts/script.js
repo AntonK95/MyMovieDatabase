@@ -17,6 +17,7 @@ window.addEventListener('load', async () => {
     searchMovies();
 });
 
+//const apiKey = '567f8027';
 
 async function loadTrailer() {
     try {
@@ -90,7 +91,7 @@ async function showtopMovies() {
         // Lägg till imdbID i dataset för varje kort
         movieBox.dataset.imdbID = movie.imdbID;
 
-        movieBox.addEventListener('click', () => showMovieDetails(movie));
+        movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
         
         // Lägg till poster och titel i movieBox:en
         movieBox.appendChild(posterImg);
@@ -118,9 +119,10 @@ async function searchMovies() {
         console.log(searchResults);
 
         const searchResultItems = document.querySelectorAll('.movie__container');
-        searchResultItems.forEach(item => {
-            item.addEventListener('click', () => showMovieDetails(item.dataset.movie));
-        });
+        // Denna forEach() loopen gjore att två overlays öppnades vid klick på renderat kort
+        // searchResultItems.forEach(item => {
+        //     item.addEventListener('click', once(() => showMovieDetails(item.dataset.imdbID)));
+        // });
         
         if(searchInput.value.trim() === '') {
             // Så länge som searchInput är lika med en tom sträng så visa nedan
@@ -176,7 +178,7 @@ function createMovieCard(movie) {
     // Lägg till imdbID i dataset för varje kort
     movieBox.dataset.imdbID = movie.imdbID;
 
-    movieBox.addEventListener('click', () => showMovieDetails(movie));
+    movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
     
 
     movieBox.appendChild(posterImg);
@@ -185,32 +187,34 @@ function createMovieCard(movie) {
     return movieBox;
 }
 
-async function showMovieDetails(movie) {
-    console.log('Visa information om film', movie);
+async function showMovieDetails(imdbID) {
+    // console.log('Visa information om film', imdbID);
 
     try {
         // Kontrollera att 'movie' och 'dataset.movie' är definerade
-        if(movie && movie.dataset && movie.dataset.imdbID) {
+        // if(movie && movie.dataset && movie.dataset.imdbID) {
         //const imdbID = movie.dataset.imdbID;
         // Parsa JSON-strängen från dataset för att få filmobjektet
-        const movieDetails = movie.dataset.movie ? JSON.parse(movie.dataset.movie) : {};
-        console.log('Movie details', movieDetails);
+        // const movieDetails = movie.dataset.movie ? JSON.parse(movie.dataset.movie) : {};
+        // console.log('Movie details', movieDetails);
 
         // Gör ett nytt API-anrop för att hämta detaljerad information baserat på imdbID
-        const detailedMovieInfo = await fetchDetailedMovieInfo(movieDetails.imdbID);
-        console.log('Detailed movie info', detailedMovieInfo);
+        const detailedMovieInfo = await fetchDetailedMovieInfo(imdbID);
+        // console.log('Detailed movie info', detailedMovieInfo);
         // Visa information i overlay
         showOverlayWithDetails(detailedMovieInfo);
-        } else {
-            console.log('Ingen filmdata tillgänglig för detta kort');
-        }
+        //} else {
+            //console.log('Ingen filmdata tillgänglig för detta kort');
+        //}
     } catch (error) {
         console.error('Något gick fel vid hämtning av detaljerat information', error);
     }
 }
 
-function showOverlayWithDetails(movieDetails) {
+async function showOverlayWithDetails(movieDetails) {
     // Skapa overlay-element
+    // const detailedMovieInfo = await fetchDetailedMovieInfo(movieDetails.imdbID);
+
     const overlay = document.createElement('div');
     overlay.classList.add('overlay');
 
@@ -219,30 +223,62 @@ function showOverlayWithDetails(movieDetails) {
     overlayContent.classList.add('overlay-content');
 
     const posterImg = document.createElement('img');
-    posterImg.classList.add('poster__img');
+    posterImg.classList.add('detailed__poster-img');
     posterImg.src = movieDetails.Poster;
     posterImg.alt = movieDetails.Title;
 
     const movieTitle = document.createElement('h2');
-    movieTitle.classList.add('movie__title movie__details-title');
+    movieTitle.classList.add('detailed__movie-title');
     movieTitle.textContent = movieDetails.Title;
 
     const moviePlot = document.createElement('p');
     moviePlot.classList.add('plot');
     moviePlot.textContent = movieDetails.Plot;
 
+    const additionalInfo = document.createElement('section');
+    additionalInfo.classList.add('additional__info');
+
+    const actorsList = document.createElement('section');
+    const actors = document.createElement('ul');
+    const actorsLabel = document.createElement('span');
+    actorsLabel.textContent = 'Actors: ';
+    actors.classList.add('actors');
+    actors.textContent = movieDetails.Actors;
+
+    actorsList.appendChild(actorsLabel);
+    actorsList.appendChild(actors);
+
+    const madeYear = document.createElement('section');
+    const year = document.createElement('p');
+    const yearLabel = document.createElement('span');
+    yearLabel.textContent = 'Year: ';
+    year.classList.add('year');
+    year.textContent = movieDetails.Year;
+
+    madeYear.appendChild(yearLabel);
+    madeYear.appendChild(year);
+
+    const runtime = document.createElement('p');
+    runtime.classList.add('runtime');
+    runtime.textContent = movieDetails.Runtime;
+    
+    additionalInfo.appendChild(actorsList);
+    additionalInfo.appendChild(madeYear);
+    additionalInfo.appendChild(runtime);
+
     overlayContent.appendChild(posterImg);
     overlayContent.appendChild(movieTitle);
+    overlayContent.appendChild(moviePlot);
+    overlayContent.appendChild(additionalInfo);
+    
 
     overlay.appendChild(overlayContent);
 
     document.body.appendChild(overlay);
     
-    console.log('API URL', apiUrl);
-    console.log('API Response', data);
     // EventListener för att stänga overlay vid klick utanför.
     overlay.addEventListener('click', (event) => {
-        if(event.target === overlay) {
+        if(event.target === event.currentTarget) {
             document.body.removeChild(overlay);
         }
     });
