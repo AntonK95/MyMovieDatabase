@@ -73,6 +73,7 @@ async function searchMoviesAPI(apiKey, searchQuery) {
 
 export { searchMoviesAPI };
 
+/* Specific movie */
 
 async function fetchDetailedMovieInfo(imdbID) {
     const apiKey = '567f8027';
