@@ -253,21 +253,65 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 80%;
+    width: 100%;
     height: 100%;
     background: rgba(0, 0, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    padding: 3rem;
+    /* scroll-behavior: smooth; */
+    overflow: auto;
 }
 
 .overlay-content {
-    background: #fff;
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--primary-grey);
+    padding: 1rem;
+    margin: auto;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
 }
+
+.detailed__movie-title {
+    font-family: var(--font-family);
+    color: var(--text-yellow);
+    margin: .5rem;
+}
+
+.plot{
+    font-family: var(--font-family);
+    text-align: center;
+    color: var(--text-yellow);
+    margin-bottom: .5rem;
+}
+
+.additional__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin: 1rem;
+}
+
+.actors {
+    font-family: var(--font-family);
+    color: var(--text-yellow);
+}
+
+p {
+    font-family: var(--font-family);
+    color: var(--text-yellow);
+}
+
+span {
+    font-family: var(--font-family);
+    color: var(--text-yellow);
+}
+
 /* Media Queries */
 @media screen and (max-width: 1380px) {
     .content-wrapper {
