@@ -118,7 +118,7 @@ async function searchMovies() {
         displaySearchResults(searchResults);
         console.log(searchResults);
 
-        const searchResultItems = document.querySelectorAll('.movie__container');
+        // const searchResultItems = document.querySelectorAll('.movie__container');
         // Denna forEach() loopen gjore att två overlays öppnades vid klick på renderat kort
         // searchResultItems.forEach(item => {
         //     item.addEventListener('click', once(() => showMovieDetails(item.dataset.imdbID)));
@@ -176,7 +176,7 @@ function createMovieCard(movie) {
     movieTitle.textContent = movie.Title;
 
     // Lägg till imdbID i dataset för varje kort
-    movieBox.dataset.imdbID = movie.imdbID;
+    // movieBox.dataset.imdbID = movie.imdbID;
 
     movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
     
@@ -221,6 +221,12 @@ async function showOverlayWithDetails(movieDetails) {
     // Skapa innehållet för overlay
     const overlayContent = document.createElement('section');
     overlayContent.classList.add('overlay-content');
+
+    const backBtn = document.createElement('button');
+    backBtn.classList.add('backBtn');
+    backBtn.textContent = 'X';
+
+    overlayContent.appendChild(backBtn);
 
     const posterImg = document.createElement('img');
     posterImg.classList.add('detailed__poster-img');
@@ -278,7 +284,7 @@ async function showOverlayWithDetails(movieDetails) {
     
     // EventListener för att stänga overlay vid klick utanför.
     overlay.addEventListener('click', (event) => {
-        if(event.target === event.currentTarget) {
+        if(!overlayContent.contains(event.target) || event.target === backBtn) {
             document.body.removeChild(overlay);
         }
     });
