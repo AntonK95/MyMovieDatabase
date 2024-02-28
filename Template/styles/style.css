@@ -277,6 +277,16 @@ body {
     /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); */
 }
 
+.backBtn {
+    border: none;
+    background-color: var(--primary-grey);
+    color: var(--text-yellow);
+    font-family: var(--font-family);
+    font-size: xx-large;
+    align-self: flex-end;
+    cursor: pointer;
+}
+
 .detailed__poster-img {
     max-height: 100%;
     max-width: 100%;
@@ -324,6 +334,9 @@ span {
     .content-wrapper {
         width: 95%;
     }
+    .backBtn {
+        font-size: 1.5rem;
+    }
 }
 
 @media screen and (max-width: 1260px) {
@@ -336,6 +349,9 @@ span {
     }
     .movie__search-container {
         grid-template-columns: repeat(3, 1fr);
+    }
+    .backBtn {
+        font-size: 1.4rem;
     }
 }
 
@@ -354,6 +370,9 @@ span {
     }
     .movie__container {
         min-width: -webkit-fill-available;
+    }
+    .backBtn {
+        font-size: 1.3rem;
     }
     .plot{
         margin-bottom: .5rem;
