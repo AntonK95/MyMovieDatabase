@@ -165,7 +165,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     border-radius: 5px;
-    padding: 1rem 2rem 0.5rem 2rem;
+    padding: .5rem 2rem .5rem 2rem;
     cursor: pointer;
 }
 
@@ -327,6 +327,17 @@ p {
 span {
     font-family: var(--font-family);
     color: var(--text-yellow);
+}
+
+.favoriteBtn {
+    border: none;
+    padding: 5px;
+    background-color: var(--text-yellow);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    border-radius: .2rem;
+    cursor: pointer;
+    margin-bottom: 10px;
 }
 
 /* Media Queries */
