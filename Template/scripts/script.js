@@ -15,6 +15,7 @@ window.addEventListener('load', async () => {
     myTopMovies();
     showtopMovies();
     searchMovies();
+    preventDefault();
 });
 
 //const apiKey = '567f8027';
@@ -88,10 +89,10 @@ async function showtopMovies() {
         movieTitle.classList.add('movie__title');
         movieTitle.textContent = movie.title;
 
-        // Lägg till imdbID i dataset för varje kort
-        movieBox.dataset.imdbID = movie.imdbID;
+        // // Lägg till imdbID i dataset för varje kort
+        // movieBox.dataset.imdbID = movie.imdbID;
 
-        movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
+        // movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
         
         // Lägg till poster och titel i movieBox:en
         movieBox.appendChild(posterImg);
@@ -103,6 +104,13 @@ async function showtopMovies() {
     });
 }
 
+function preventDefault() {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', (event) => {
+    event.preventDefault();
+});
+
+}
 
 async function searchMovies() {
     const apiKey = '567f8027';
@@ -117,7 +125,7 @@ async function searchMovies() {
         const searchResults = await searchMoviesAPI(apiKey, searchInput.value);
         displaySearchResults(searchResults);
         console.log(searchResults);
-
+        
         // const searchResultItems = document.querySelectorAll('.movie__container');
         // Denna forEach() loopen gjore att två overlays öppnades vid klick på renderat kort
         // searchResultItems.forEach(item => {
@@ -151,7 +159,7 @@ function displaySearchResults(results) {
     if(results) {
         results.forEach(movie => {
             // Skapa filmkort och lägg till i behållaren
-            const displayMovieSearch = createMovieCard(movie);
+            const displayMovieSearch = createMovieCard(movie.imdbID ? movie : {...movie, imdbID: "" });
             moviesContainer.appendChild(displayMovieSearch);
         });
     } else {
@@ -163,8 +171,20 @@ function displaySearchResults(results) {
 function createMovieCard(movie) {
     const movieBox = document.createElement('article');
     movieBox.classList.add('movie__container');
+    
+    // Lägg till imdbID i dataset för varje kort
+    const imdbID = movie.imdbID || "";
+    if (imdbID) {
+        movieBox.dataset.imdbID = imdbID;
+        movieBox.dataset.movie = JSON.stringify(movie);
 
-    movieBox.dataset.movie = JSON.stringify(movie);
+        
+    } else {
+        console.error('ImdbID is missing for movie:', movie);
+    }
+
+
+    console.log('Movie addded ', movie);
 
     const posterImg = document.createElement('img');
     posterImg.classList.add('poster__img');
@@ -175,11 +195,16 @@ function createMovieCard(movie) {
     movieTitle.classList.add('movie__title');
     movieTitle.textContent = movie.Title;
 
-    // Lägg till imdbID i dataset för varje kort
-    // movieBox.dataset.imdbID = movie.imdbID;
-
-    movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
     
+
+    movieBox.addEventListener('click', () => showMovieDetails(imdbID));
+    
+    // Skapa en favoritknapp
+    const favoriteBtn = document.createElement('button');
+    favoriteBtn.classList.add('favoriteBtn');
+    favoriteBtn.textContent = 'Add to favorites';
+
+    movieBox.appendChild(favoriteBtn);
 
     movieBox.appendChild(posterImg);
     movieBox.appendChild(movieTitle);
@@ -203,9 +228,7 @@ async function showMovieDetails(imdbID) {
         // console.log('Detailed movie info', detailedMovieInfo);
         // Visa information i overlay
         showOverlayWithDetails(detailedMovieInfo);
-        //} else {
-            //console.log('Ingen filmdata tillgänglig för detta kort');
-        //}
+
     } catch (error) {
         console.error('Något gick fel vid hämtning av detaljerat information', error);
     }
@@ -268,6 +291,12 @@ async function showOverlayWithDetails(movieDetails) {
     runtime.classList.add('runtime');
     runtime.textContent = movieDetails.Runtime;
     
+    // Lägg till en eventlyssnare för favoritknappen
+    const favoriteBtn = document.createElement('button');
+    favoriteBtn.classList.add('favoriteBtn');
+    favoriteBtn.textContent = 'Add to favorites';
+
+
     additionalInfo.appendChild(actorsList);
     additionalInfo.appendChild(madeYear);
     additionalInfo.appendChild(runtime);
@@ -276,7 +305,7 @@ async function showOverlayWithDetails(movieDetails) {
     overlayContent.appendChild(movieTitle);
     overlayContent.appendChild(moviePlot);
     overlayContent.appendChild(additionalInfo);
-    
+    overlayContent.appendChild(favoriteBtn);
 
     overlay.appendChild(overlayContent);
 
