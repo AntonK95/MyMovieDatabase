@@ -340,6 +340,31 @@ span {
     margin-bottom: 10px;
 }
 
+.favorite__overlay-content {
+    background-color: var(--primary-grey);
+
+}
+
+.closeBtn {
+    border: none;
+    background-color: var(--primary-grey);
+    color: var(--text-yellow);
+    font-family: var(--font-family);
+    font-size: xx-large;
+    align-self: flex-end;
+    cursor: pointer;
+}
+
+.favorite__overlay-content {
+    background: var(--primary-grey);
+    padding: 20px;
+    max-width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
 /* Media Queries */
 @media screen and (max-width: 1380px) {
     .content-wrapper {
@@ -443,5 +468,8 @@ span {
     .plot {
         margin-left: 1rem;
         margin-right: 1rem;
+    }
+    .closeBtn {
+        font-size: 1.3rem;
     }
 }
