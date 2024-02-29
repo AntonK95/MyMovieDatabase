@@ -195,14 +195,24 @@ function createMovieCard(movie) {
     movieTitle.classList.add('movie__title');
     movieTitle.textContent = movie.Title;
 
-    
-
     movieBox.addEventListener('click', () => showMovieDetails(imdbID));
+    
     
     // Skapa en favoritknapp
     const favoriteBtn = document.createElement('button');
     favoriteBtn.classList.add('favoriteBtn');
     favoriteBtn.textContent = 'Add to favorites';
+
+    // Kontrollera om filmen redan finns i favoritlistan
+    const isFavorite = isMovieInFavorites(movie);
+
+    // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
+    updateFavoriteButton(favoriteBtn, isFavorite);
+
+    favoriteBtn.addEventListener('click', () => toggleFavoriteStatus(movie, favoriteBtn));
+
+
+    favoriteBtn.addEventListener('click', () => addToFavorites(movie));
 
     movieBox.appendChild(favoriteBtn);
 
@@ -210,6 +220,120 @@ function createMovieCard(movie) {
     movieBox.appendChild(movieTitle);
 
     return movieBox;
+}
+
+function addToFavorites(movie) {
+    // Hämta favoritlistan från localStorage
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    // Lägg till den valda filmen i favoritlistan
+    favorites.push(movie);
+
+    // kontrollera om filmen redan finns i listan
+    const isDuplicate = favorites.some((fav) => fav.imdbID === movie.imdbID);
+
+    if(isDuplicate) {
+        alert('Movie already in favorites!');
+        return;
+    }
+    // Uppdatera favoritlistan i localStorage
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+
+    // alert('Movie Added to favorites');
+}
+
+// Funktion för att kontrollera om filmen redan finns i favoritlistan
+function isMovieInFavorites(movie) {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    return favorites.some((fav) => fav.imdbID === movie.imdbID);
+}
+
+// Funktion för att uppdatera knappens text om filmen finns i listan eller inte
+function updateFavoriteButton(button, isFavorite) {
+    button.textContent = isFavorite ? 'Remove from favorites' : 'Add to favorites';
+}
+
+const favBtn = document.getElementById('favBtn');
+favBtn.addEventListener('click', showFavoritesOverlay);
+
+function showFavoritesOverlay() {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+
+    const overlayContent = document.createElement('div');
+    overlayContent.classList.add('favorite__overlay-content');
+
+    const closeBtn = document.createElement('button');
+    closeBtn.classList.add('closeBtn');
+    closeBtn.textContent = 'X';
+    closeBtn.addEventListener('click', () => document.body.removeChild(overlay));
+
+    overlayContent.appendChild(closeBtn);
+
+    const favoritesList = document.createElement('ul');
+    favoritesList.classList.add('favorites__list');
+
+    favorites.forEach((favorite) => {
+        const movieBox = document.createElement('article');
+        movieBox.classList.add('movie__container');
+
+        const posterImg = document.createElement('img');
+        posterImg.classList.add('poster__img');
+        posterImg.src = favorite.Poster;
+        posterImg.alt = favorite.Title;
+
+        const movieTitle = document.createElement('h3');
+        movieTitle.classList.add('movie__title');
+        movieTitle.textContent = favorite.Title;
+
+        const favoriteBtn = document.createElement('button');
+        favoriteBtn.classList.add('favoriteBtn');
+        favoriteBtn.textContent = 'Add to favorites';
+        
+        // Kontrollera om filmen redan finns i favoritlistan
+        const isFavorite = isMovieInFavorites(favorite);
+
+        // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
+        updateFavoriteButton(favoriteBtn, isFavorite);
+
+        favoriteBtn.addEventListener('click', () => toggleFavoriteStatus(favorite, favoriteBtn));
+
+
+        favoriteBtn.addEventListener('click', () => addToFavorites(favorite));
+
+        movieBox.appendChild(posterImg);
+        movieBox.appendChild(movieTitle);
+        movieBox.appendChild(favoriteBtn);
+
+        favoritesList.appendChild(movieBox);
+    });
+
+    overlayContent.appendChild(favoritesList);
+    overlay.appendChild(overlayContent);
+
+    document.body.appendChild(overlay);
+}
+
+
+// Funktion för att lägga till eller ta bort filmen från favoritlistan
+function toggleFavoriteStatus(movie, button) {
+    const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const isFavorite = isMovieInFavorites(movie);
+
+    if(isFavorite) {
+        // Ta bort från listan
+        const updatedFavorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+    } else {
+        // Lägg till i listan
+        favorites.push(movie);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+    }
+
+    // Uppdatera knappens text
+    updateFavoriteButton(button, !isFavorite);
 }
 
 async function showMovieDetails(imdbID) {
@@ -292,10 +416,11 @@ async function showOverlayWithDetails(movieDetails) {
     runtime.textContent = movieDetails.Runtime;
     
     // Lägg till en eventlyssnare för favoritknappen
-    const favoriteBtn = document.createElement('button');
-    favoriteBtn.classList.add('favoriteBtn');
-    favoriteBtn.textContent = 'Add to favorites';
+    // const favoriteBtn = document.createElement('button');
+    // favoriteBtn.classList.add('favoriteBtn');
+    // favoriteBtn.textContent = 'Add to favorites';
 
+    // favoriteBtn.addEventListener('click', () => addToFavorites(movie));
 
     additionalInfo.appendChild(actorsList);
     additionalInfo.appendChild(madeYear);
@@ -305,7 +430,7 @@ async function showOverlayWithDetails(movieDetails) {
     overlayContent.appendChild(movieTitle);
     overlayContent.appendChild(moviePlot);
     overlayContent.appendChild(additionalInfo);
-    overlayContent.appendChild(favoriteBtn);
+    // overlayContent.appendChild(favoriteBtn);
 
     overlay.appendChild(overlayContent);
 
