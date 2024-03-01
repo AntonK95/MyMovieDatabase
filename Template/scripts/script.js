@@ -7,6 +7,8 @@ import { searchMoviesAPI } from "./APIhandler.js";
 import { fetchDetailedMovieInfo } from "./APIhandler.js"; 
 
 window.addEventListener('load', async () => {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    console.log(favorites.length);
     console.log('load');
     //Förslagsvis anropar ni era funktioner som skall sätta lyssnare, rendera objekt osv. härifrån
     // setupCarousel();
@@ -201,7 +203,7 @@ function createMovieCard(movie) {
     // Skapa en favoritknapp
     const favoriteBtn = document.createElement('button');
     favoriteBtn.classList.add('favoriteBtn');
-    favoriteBtn.textContent = 'Add to favorites';
+    // favoriteBtn.textContent = 'Add to favorites';
 
     // Kontrollera om filmen redan finns i favoritlistan
     const isFavorite = isMovieInFavorites(movie);
@@ -209,7 +211,14 @@ function createMovieCard(movie) {
     // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
     updateFavoriteButton(favoriteBtn, isFavorite);
 
-    favoriteBtn.addEventListener('click', () => toggleFavoriteStatus(movie, favoriteBtn));
+    favoriteBtn.addEventListener('click', () => {
+        event.stopPropagation(); // Förhindra att klicket propagerar till överliggande element
+        if(isFavorite) {
+            removeFromFavorites(movie);
+        } else {
+            toggleFavoriteStatus(movie, favoriteBtn)
+        }
+    });
 
 
     favoriteBtn.addEventListener('click', () => addToFavorites(movie));
@@ -226,20 +235,29 @@ function addToFavorites(movie) {
     // Hämta favoritlistan från localStorage
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
-    // Lägg till den valda filmen i favoritlistan
-    favorites.push(movie);
-
+    
+ console.log(favorites.length);
     // kontrollera om filmen redan finns i listan
     const isDuplicate = favorites.some((fav) => fav.imdbID === movie.imdbID);
-
+    console.log(typeof isDuplicate);
     if(isDuplicate) {
-        alert('Movie already in favorites!');
+        // alert('Movie already in favorites!');
         return;
     }
+    // Lägg till den valda filmen i favoritlistan
+    favorites.push(movie);  
     // Uppdatera favoritlistan i localStorage
     localStorage.setItem('favorites', JSON.stringify(favorites));
 
     // alert('Movie Added to favorites');
+}
+
+function removeFromFavorites(movie) {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    const updatedFavorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
+
+    localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
 }
 
 // Funktion för att kontrollera om filmen redan finns i favoritlistan
@@ -260,7 +278,7 @@ function showFavoritesOverlay() {
     const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
     const overlay = document.createElement('div');
-    overlay.classList.add('overlay');
+    overlay.classList.add('favorite__overlay');
 
     const overlayContent = document.createElement('div');
     overlayContent.classList.add('favorite__overlay-content');
@@ -290,7 +308,7 @@ function showFavoritesOverlay() {
 
         const favoriteBtn = document.createElement('button');
         favoriteBtn.classList.add('favoriteBtn');
-        favoriteBtn.textContent = 'Add to favorites';
+        // favoriteBtn.textContent = 'Remove from favorites';
         
         // Kontrollera om filmen redan finns i favoritlistan
         const isFavorite = isMovieInFavorites(favorite);
@@ -298,10 +316,12 @@ function showFavoritesOverlay() {
         // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
         updateFavoriteButton(favoriteBtn, isFavorite);
 
-        favoriteBtn.addEventListener('click', () => toggleFavoriteStatus(favorite, favoriteBtn));
+        favoriteBtn.addEventListener('click', () => {
+         toggleFavoriteStatus(favorite, favoriteBtn);
+        });
 
 
-        favoriteBtn.addEventListener('click', () => addToFavorites(favorite));
+        // favoriteBtn.addEventListener('click', () => addToFavorites(favorite));
 
         movieBox.appendChild(posterImg);
         movieBox.appendChild(movieTitle);
@@ -326,6 +346,11 @@ function toggleFavoriteStatus(movie, button) {
         // Ta bort från listan
         const updatedFavorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
         localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+
+        const movieContainer = button.closest('.movie__container');
+        if(movieContainer) {
+            movieContainer.parentElement.removeChild(movieContainer);
+        }
     } else {
         // Lägg till i listan
         favorites.push(movie);
