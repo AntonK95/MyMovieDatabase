@@ -10,17 +10,12 @@ window.addEventListener('load', async () => {
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
     console.log(favorites.length);
     console.log('load');
-    //Förslagsvis anropar ni era funktioner som skall sätta lyssnare, rendera objekt osv. härifrån
-    // setupCarousel();
-    // fetchTrailerAPI();
     loadTrailer();
     myTopMovies();
     showtopMovies();
     searchMovies();
     preventDefault();
 });
-
-//const apiKey = '567f8027';
 
 async function loadTrailer() {
     try {
@@ -91,11 +86,6 @@ async function showtopMovies() {
         movieTitle.classList.add('movie__title');
         movieTitle.textContent = movie.title;
 
-        // // Lägg till imdbID i dataset för varje kort
-        // movieBox.dataset.imdbID = movie.imdbID;
-
-        // movieBox.addEventListener('click', () => showMovieDetails(movie.imdbID));
-        
         // Lägg till poster och titel i movieBox:en
         movieBox.appendChild(posterImg);
         movieBox.appendChild(movieTitle);
@@ -127,12 +117,6 @@ async function searchMovies() {
         const searchResults = await searchMoviesAPI(apiKey, searchInput.value);
         displaySearchResults(searchResults);
         console.log(searchResults);
-        
-        // const searchResultItems = document.querySelectorAll('.movie__container');
-        // Denna forEach() loopen gjore att två overlays öppnades vid klick på renderat kort
-        // searchResultItems.forEach(item => {
-        //     item.addEventListener('click', once(() => showMovieDetails(item.dataset.imdbID)));
-        // });
         
         if(searchInput.value.trim() === '') {
             // Så länge som searchInput är lika med en tom sträng så visa nedan
@@ -213,20 +197,6 @@ function createMovieCard(movie) {
 
     favoriteBtn.addEventListener('click', () => handleFavoriteButtonClick(movie, favoriteBtn));
 
-    // favoriteBtn.addEventListener('click', () => {
-    //     event.stopPropagation(); // Förhindra att klicket propagerar till överliggande element
-    //     if(isFavorite) {
-    //         removeFromFavorites(movie);
-    //     } else {
-    //         toggleFavoriteStatus(movie, favoriteBtn)
-    //     }
-    // });
-
-
-    // favoriteBtn.addEventListener('click', () => {
-    //     toggleFavoriteStatus(movie, favoriteBtn);
-    // });
-
     movieBox.appendChild(favoriteBtn);
 
     movieBox.appendChild(posterImg);
@@ -240,27 +210,6 @@ function handleFavoriteButtonClick(movie, button) {
     event.stopPropagation(); // Förhindra att klicket propagerar till överliggande element
     toggleFavoriteStatus(movie, button);
 }
-
-// function addToFavorites(movie) {
-//     // Hämta favoritlistan från localStorage
-//     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-
-    
-//  console.log(favorites.length);
-//     // kontrollera om filmen redan finns i listan
-//     const isDuplicate = favorites.some((fav) => fav.imdbID === movie.imdbID);
-//     console.log(typeof isDuplicate);
-//     if(isDuplicate) {
-//         // alert('Movie already in favorites!');
-//         return;
-//     }
-//     // Lägg till den valda filmen i favoritlistan
-//     favorites.push(movie);  
-//     // Uppdatera favoritlistan i localStorage
-//     localStorage.setItem('favorites', JSON.stringify(favorites));
-
-//     // alert('Movie Added to favorites');
-// }
 
 function removeFromFavorites(movie) {
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -304,41 +253,6 @@ function showFavoritesOverlay() {
         const movieBox = createMovieCard(favorite);
 
         favoritesList.appendChild(movieBox);
-        // const movieBox = document.createElement('article');
-        // movieBox.classList.add('movie__container', 'in-favorites-overlay');
-
-        // const posterImg = document.createElement('img');
-        // posterImg.classList.add('poster__img');
-        // posterImg.src = favorite.Poster;
-        // posterImg.alt = favorite.Title;
-
-        // const movieTitle = document.createElement('h3');
-        // movieTitle.classList.add('movie__title');
-        // movieTitle.textContent = favorite.Title;
-
-        // const favoriteBtn = document.createElement('button');
-        // favoriteBtn.classList.add('favoriteBtn');
-        // // favoriteBtn.textContent = 'Remove from favorites';
-        
-        // // Kontrollera om filmen redan finns i favoritlistan
-        // const isFavorite = isMovieInFavorites(favorite);
-
-        // // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
-        // updateFavoriteButton(favoriteBtn, isFavorite);
-
-        
-        // favoriteBtn.addEventListener('click', () => {
-        //     toggleFavoriteStatus(movie, favoriteBtn);
-        // });
-
-
-        // favoriteBtn.addEventListener('click', () => addToFavorites(favorite));
-
-        // movieBox.appendChild(posterImg);
-        // movieBox.appendChild(movieTitle);
-        // movieBox.appendChild(favoriteBtn);
-
-        favoritesList.appendChild(movieBox);
     });
 
     overlayContent.appendChild(favoritesList);
@@ -357,16 +271,6 @@ function toggleFavoriteStatus(movie, button) {
         // Ta bort från listan
         const updatedFavorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
         localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-
-        // const movieContainer = button.closest('.movie__container');
-        // if(movieContainer) {
-            // const isInFavoritesOverlay = movieContainer.classList.contains('in-favorites-overlay');
-
-            // if(isInFavoritesOverlay) {
-            //     document.body.removeChild(movieContainer);
-            // }
-            //movieContainer.parentElement.removeChild(movieContainer);
-        // }
     } else {
         // Lägg till i listan
         favorites.push(movie);
@@ -383,19 +287,11 @@ function updateFavoriteButton(button, isFavorite) {
 }
 
 async function showMovieDetails(imdbID) {
-    // console.log('Visa information om film', imdbID);
 
     try {
-        // Kontrollera att 'movie' och 'dataset.movie' är definerade
-        // if(movie && movie.dataset && movie.dataset.imdbID) {
-        //const imdbID = movie.dataset.imdbID;
-        // Parsa JSON-strängen från dataset för att få filmobjektet
-        // const movieDetails = movie.dataset.movie ? JSON.parse(movie.dataset.movie) : {};
-        // console.log('Movie details', movieDetails);
-
         // Gör ett nytt API-anrop för att hämta detaljerad information baserat på imdbID
         const detailedMovieInfo = await fetchDetailedMovieInfo(imdbID);
-        // console.log('Detailed movie info', detailedMovieInfo);
+        
         // Visa information i overlay
         showOverlayWithDetails(detailedMovieInfo);
 
@@ -406,8 +302,7 @@ async function showMovieDetails(imdbID) {
 
 async function showOverlayWithDetails(movieDetails) {
     // Skapa overlay-element
-    // const detailedMovieInfo = await fetchDetailedMovieInfo(movieDetails.imdbID);
-
+    
     const overlay = document.createElement('div');
     overlay.classList.add('overlay');
 
@@ -461,13 +356,6 @@ async function showOverlayWithDetails(movieDetails) {
     runtime.classList.add('runtime');
     runtime.textContent = movieDetails.Runtime;
     
-    // Lägg till en eventlyssnare för favoritknappen
-    // const favoriteBtn = document.createElement('button');
-    // favoriteBtn.classList.add('favoriteBtn');
-    // favoriteBtn.textContent = 'Add to favorites';
-
-    // favoriteBtn.addEventListener('click', () => addToFavorites(movie));
-
     additionalInfo.appendChild(actorsList);
     additionalInfo.appendChild(madeYear);
     additionalInfo.appendChild(runtime);
@@ -476,7 +364,6 @@ async function showOverlayWithDetails(movieDetails) {
     overlayContent.appendChild(movieTitle);
     overlayContent.appendChild(moviePlot);
     overlayContent.appendChild(additionalInfo);
-    // overlayContent.appendChild(favoriteBtn);
 
     overlay.appendChild(overlayContent);
 
