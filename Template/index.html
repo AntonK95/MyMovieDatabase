@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Movie Database</title>
+    <link rel="stylesheet" href="./styles/style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="content-wrapper header__flex">
+            <a href="index.html"><img src="./res/logo.png" alt="logotype"></a>
+            <form>
+                <input id="searchInput" type="text">
+                <button class="header__form-btn" id="searchBtn">Search</button>
+            </form>
+            <button class="header__fav-btn" id="favBtn">Favorites</button>
+        </div>
+    </header>
+
+    <section class="favorites-container d-none" id="favoritesContainer">
+        <div class="content-wrapper favorites" id="favorites">
+
+        </div>
+    </section>
+
+    <!-- Search Results d-none -->
+    <section class="d-none">
+        <div class="content-wrapper results">
+            <h2 class="results__title">Search Results</h2>
+            <ul class="results__list" id="resultsList">
+            </ul>
+        </div>
+    </section>
+
+    <!-- Trailer Section/Carousel Section -->
+    <section id="carouselSection">
+        <div class="content-wrapper">
+            <section class="carousel__section">
+                <article class="carousel" data-carousel>
+                    <button class="carousel__btn prev" data-carousel-btn="prev">&#8612;</button>
+                    <button class="carousel__btn next" data-carousel-btn="next">&#8614;</button>
+                    <div data-slides>     
+                </article>
+            </section>
+        </div>
+    </section>
+
+    <!-- Popular movies section -->
+    <section id="popularMoviesSection">
+        <div class="content-wrapper popular">
+            <h2 class="popular__title">My Movie Database Top 20</h2>
+            <section class="popular__card-container" id="popularCardContainer">
+                <!-- <article class="popular__movie">
+                    <img class="popular__movie-poster" src="./res/revengeOfTheSith.jpg" alt="Revenge of the Sith">
+                    <h3 class="popular__movie-title">Revenge of the Sith</h3>
+                </article>
+                <article class="popular__movie">
+                    <img class="popular__movie-poster" src="./res/revengeOfTheSith.jpg" alt="Revenge of the Sith">
+                    <h3 class="popular__movie-title">Revenge of the Sith</h3>
+                </article>
+                <article class="popular__movie">
+                    <img class="popular__movie-poster" src="./res/revengeOfTheSith.jpg" alt="Revenge of the Sith">
+                    <h3 class="popular__movie-title">Revenge of the Sith</h3>
+                </article>   -->
+            </section>
+        </div>
+    </section>
+
+    <section class="content-wrapper search-result">
+        <section class="movie__search-container" id="moviesContainer" style="display: none;">
+
+        </section>
+    </section>
+
+    <script type="module" src="./scripts/script.js"></script>
+</body>
+
+</html>
