@@ -186,7 +186,7 @@ function createMovieCard(movie) {
     }
 
 
-    console.log('Movie addded ', movie);
+    // console.log('Movie addded ', movie);
 
     const posterImg = document.createElement('img');
     posterImg.classList.add('poster__img');
@@ -211,17 +211,21 @@ function createMovieCard(movie) {
     // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
     updateFavoriteButton(favoriteBtn, isFavorite);
 
-    favoriteBtn.addEventListener('click', () => {
-        event.stopPropagation(); // Förhindra att klicket propagerar till överliggande element
-        if(isFavorite) {
-            removeFromFavorites(movie);
-        } else {
-            toggleFavoriteStatus(movie, favoriteBtn)
-        }
-    });
+    favoriteBtn.addEventListener('click', () => handleFavoriteButtonClick(movie, favoriteBtn));
+
+    // favoriteBtn.addEventListener('click', () => {
+    //     event.stopPropagation(); // Förhindra att klicket propagerar till överliggande element
+    //     if(isFavorite) {
+    //         removeFromFavorites(movie);
+    //     } else {
+    //         toggleFavoriteStatus(movie, favoriteBtn)
+    //     }
+    // });
 
 
-    favoriteBtn.addEventListener('click', () => addToFavorites(movie));
+    // favoriteBtn.addEventListener('click', () => {
+    //     toggleFavoriteStatus(movie, favoriteBtn);
+    // });
 
     movieBox.appendChild(favoriteBtn);
 
@@ -231,26 +235,32 @@ function createMovieCard(movie) {
     return movieBox;
 }
 
-function addToFavorites(movie) {
-    // Hämta favoritlistan från localStorage
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+// Gemensam funktion för att hantera klick på favoritknapp
+function handleFavoriteButtonClick(movie, button) {
+    event.stopPropagation(); // Förhindra att klicket propagerar till överliggande element
+    toggleFavoriteStatus(movie, button);
+}
+
+// function addToFavorites(movie) {
+//     // Hämta favoritlistan från localStorage
+//     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
     
- console.log(favorites.length);
-    // kontrollera om filmen redan finns i listan
-    const isDuplicate = favorites.some((fav) => fav.imdbID === movie.imdbID);
-    console.log(typeof isDuplicate);
-    if(isDuplicate) {
-        // alert('Movie already in favorites!');
-        return;
-    }
-    // Lägg till den valda filmen i favoritlistan
-    favorites.push(movie);  
-    // Uppdatera favoritlistan i localStorage
-    localStorage.setItem('favorites', JSON.stringify(favorites));
+//  console.log(favorites.length);
+//     // kontrollera om filmen redan finns i listan
+//     const isDuplicate = favorites.some((fav) => fav.imdbID === movie.imdbID);
+//     console.log(typeof isDuplicate);
+//     if(isDuplicate) {
+//         // alert('Movie already in favorites!');
+//         return;
+//     }
+//     // Lägg till den valda filmen i favoritlistan
+//     favorites.push(movie);  
+//     // Uppdatera favoritlistan i localStorage
+//     localStorage.setItem('favorites', JSON.stringify(favorites));
 
-    // alert('Movie Added to favorites');
-}
+//     // alert('Movie Added to favorites');
+// }
 
 function removeFromFavorites(movie) {
     let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -266,10 +276,7 @@ function isMovieInFavorites(movie) {
     return favorites.some((fav) => fav.imdbID === movie.imdbID);
 }
 
-// Funktion för att uppdatera knappens text om filmen finns i listan eller inte
-function updateFavoriteButton(button, isFavorite) {
-    button.textContent = isFavorite ? 'Remove from favorites' : 'Add to favorites';
-}
+
 
 const favBtn = document.getElementById('favBtn');
 favBtn.addEventListener('click', showFavoritesOverlay);
@@ -294,38 +301,42 @@ function showFavoritesOverlay() {
     favoritesList.classList.add('favorites__list');
 
     favorites.forEach((favorite) => {
-        const movieBox = document.createElement('article');
-        movieBox.classList.add('movie__container');
+        const movieBox = createMovieCard(favorite);
 
-        const posterImg = document.createElement('img');
-        posterImg.classList.add('poster__img');
-        posterImg.src = favorite.Poster;
-        posterImg.alt = favorite.Title;
+        favoritesList.appendChild(movieBox);
+        // const movieBox = document.createElement('article');
+        // movieBox.classList.add('movie__container', 'in-favorites-overlay');
 
-        const movieTitle = document.createElement('h3');
-        movieTitle.classList.add('movie__title');
-        movieTitle.textContent = favorite.Title;
+        // const posterImg = document.createElement('img');
+        // posterImg.classList.add('poster__img');
+        // posterImg.src = favorite.Poster;
+        // posterImg.alt = favorite.Title;
 
-        const favoriteBtn = document.createElement('button');
-        favoriteBtn.classList.add('favoriteBtn');
-        // favoriteBtn.textContent = 'Remove from favorites';
+        // const movieTitle = document.createElement('h3');
+        // movieTitle.classList.add('movie__title');
+        // movieTitle.textContent = favorite.Title;
+
+        // const favoriteBtn = document.createElement('button');
+        // favoriteBtn.classList.add('favoriteBtn');
+        // // favoriteBtn.textContent = 'Remove from favorites';
         
-        // Kontrollera om filmen redan finns i favoritlistan
-        const isFavorite = isMovieInFavorites(favorite);
+        // // Kontrollera om filmen redan finns i favoritlistan
+        // const isFavorite = isMovieInFavorites(favorite);
 
-        // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
-        updateFavoriteButton(favoriteBtn, isFavorite);
+        // // Uppdatera knappens text och funktion baserat på om filmen finns i listan eller inte
+        // updateFavoriteButton(favoriteBtn, isFavorite);
 
-        favoriteBtn.addEventListener('click', () => {
-         toggleFavoriteStatus(favorite, favoriteBtn);
-        });
+        
+        // favoriteBtn.addEventListener('click', () => {
+        //     toggleFavoriteStatus(movie, favoriteBtn);
+        // });
 
 
         // favoriteBtn.addEventListener('click', () => addToFavorites(favorite));
 
-        movieBox.appendChild(posterImg);
-        movieBox.appendChild(movieTitle);
-        movieBox.appendChild(favoriteBtn);
+        // movieBox.appendChild(posterImg);
+        // movieBox.appendChild(movieTitle);
+        // movieBox.appendChild(favoriteBtn);
 
         favoritesList.appendChild(movieBox);
     });
@@ -347,10 +358,15 @@ function toggleFavoriteStatus(movie, button) {
         const updatedFavorites = favorites.filter((fav) => fav.imdbID !== movie.imdbID);
         localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
 
-        const movieContainer = button.closest('.movie__container');
-        if(movieContainer) {
-            movieContainer.parentElement.removeChild(movieContainer);
-        }
+        // const movieContainer = button.closest('.movie__container');
+        // if(movieContainer) {
+            // const isInFavoritesOverlay = movieContainer.classList.contains('in-favorites-overlay');
+
+            // if(isInFavoritesOverlay) {
+            //     document.body.removeChild(movieContainer);
+            // }
+            //movieContainer.parentElement.removeChild(movieContainer);
+        // }
     } else {
         // Lägg till i listan
         favorites.push(movie);
@@ -359,6 +375,11 @@ function toggleFavoriteStatus(movie, button) {
 
     // Uppdatera knappens text
     updateFavoriteButton(button, !isFavorite);
+}
+
+// Funktion för att uppdatera knappens text om filmen finns i listan eller inte
+function updateFavoriteButton(button, isFavorite) {
+    button.textContent = isFavorite ? 'Remove from favorites' : 'Add to favorites';
 }
 
 async function showMovieDetails(imdbID) {
